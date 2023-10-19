@@ -1,0 +1,15 @@
+﻿.subnav {
+    border-radius: 8px 8px 0 0;
+    padding: 10px;
+}
+
+span {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}

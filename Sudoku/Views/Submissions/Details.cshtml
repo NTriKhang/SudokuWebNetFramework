@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@model Sudoku.Dtos.Outgoing.SubmissionDetailDto
+
+
+<link rel="stylesheet" href="~/Content/Grid/grid.css" />
+
+<div class="p-4">
+    <div class="row mb-3">
+        <div class="col-4">
+            <h5>
+                Chapter Name
+            </h5>
+            <p>@Model.ChapterName</p>
+        </div>
+
+        <div class="col-4">
+            <h5>
+                Level
+            </h5>
+            <p id="type">@Html.DisplayFor(model => model.NameType)</p>
+        </div>
+
+        <div class="col-4">
+            <h5>
+                Submit date
+            </h5>
+
+            <p>
+                @Html.DisplayFor(model => model.SubmitDate)
+            </p>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-4">
+            <h5>
+                Completed percent
+            </h5>
+            <p>
+                @Html.DisplayFor(model => model.CompletedPercent)
+            </p>
+        </div>
+
+        <div class="col-4">
+            <h5>
+                State
+            </h5>
+
+            <p id="type">
+                @Html.DisplayFor(model => model.State)
+            </p>
+        </div>
+
+    </div>
+    <fieldset style="text-align:center" disabled>
+        <div class="p-3">
+            <div class="output">
+
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+@section scripts_nonlayout{
+    <script src="~/Scripts/SudokuGrid/SudokuGrid.js">
+
+    </script>
+    <script>
+        var rows = 9, columns = 9;
+        $(document).ready(function () {
+            console.log("test");
+            var type = document.getElementById('type').textContent;
+            console.log(type)
+            if (type == 'Easy') {
+                rows = 5;
+                columns = 5;
+            }
+            else if (type == 'Medium') {
+                rows = 7;
+                columns = 7;
+            }
+            else if (type == 'Hard') {
+                rows = 9;
+                columns = 9;
+            }
+            drawGrid('output',@Model.SudokuString,rows,columns)
+        });
+    </script>
+}

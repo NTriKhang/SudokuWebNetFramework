@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Sudoku.Models.Rank>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+<style>
+    a {
+        text-decoration: none;
+        color: black;
+    }
+</style>
+@foreach (var item in Model)
+{
+    <div class="row shadow p-3 mb-2 bg-white rounded" style="width:125%">
+        <div class="col-1 d-flex align-items-center">
+            <span>@item.Value</span>
+        </div>
+        <div class="col-3">
+            <img src="@item.User.Profile_Image" style="width: -webkit-fill-available; height:100%" />
+        </div>
+        <div class="col-7 ps-0">
+            <span>@item.User.First_name @item.User.Last_name</span><br />
+            <span class="text-muted">Solved @item.SubmitCount problems</span>
+        </div>
+    </div>
+}

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Sudoku.Models.Discussion>
+
+@{
+    ViewBag.Title = "UserDiscussion";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@foreach (var item in Model)
+{
+    <a href="/Chapters/Play/@item.ChapterId" style="text-decoration:none" class="btn btn-light w-100">
+        <div class="row">
+            <span class="col-4 ps-5" style="text-align:start">
+                @Html.DisplayFor(modelItem => item.Chapter.Name)
+            </span>
+            <span class="col-8 ps-5" style="text-align: start">
+                @Html.DisplayFor(modelItem => item.Date)
+            </span>
+            <div class="ps-5 pt-3 pb-3 mt-2" style="text-align:start; background-color:whitesmoke">
+                @Html.DisplayFor(modelItem => item.Content)
+            </div>
+        </div>
+    </a>
+    <hr />
+}
+

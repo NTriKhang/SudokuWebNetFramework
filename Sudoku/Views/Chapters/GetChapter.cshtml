@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "GetChapter";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@model Sudoku.Dtos.Outgoing.ChapterPlayDto
+
+@{
+    Layout = null;
+}
+
+<link href="~/Content/ChapterPlaySection/ChapterPlaySection.css" rel="stylesheet" />
+<script>
+        var rows = 5, columns = 5;
+        var acceptRiddle = 0;
+        var chapterId = document.getElementById('ChapterId').value;
+
+        $(document).ready(function () {
+            const type = document.getElementById('type').textContent;
+            if (type == 'Easy') {
+                rows = 5;
+                columns = 5;
+            }
+            else if (type == 'Medium') {
+                rows = 7;
+                columns = 7;
+            }
+            else if(type == 'Hard'){
+                rows = 9;
+                columns = 9;
+            }
+        console.log(rows,columns)
+            drawGrid('output',@Model.sudokuArr, rows, columns);
+        });
+
+        $('#submit').click(function () {
+            var sudokuString = JSON.stringify(sudokuArr);
+            var chapterType = document.getElementById('type').textContent;
+            var data = {
+                ChapterId: chapterId,
+                SudokuString: sudokuString,
+                Type_Name: chapterType
+            };
+            $.ajax({
+                url: '/chapters/play',
+                type: 'post',
+                data: data,
+                dataType: 'html',
+                success: function (data) {
+                    $('#renderPart').html(data);
+                }
+            })
+        })
+</script>
+
+
+<div class="p-3">
+    <div class="mb-2">
+        <h2 class="col-10 mb-0">@Model.chapter.Name</h2>
+    </div>
+    <div class="mb-2">
+        @{
+            if (Model.chapter.TypeNavigation.Name == "Easy")
+            {
+                <span id="type" class="col-10 mb-0 text-success me-2">@Model.chapter.TypeNavigation.Name</span>
+            }
+            else if (Model.chapter.TypeNavigation.Name == "Medium")
+            {
+                <span id="type" class="col-10 mb-0 text-warning me-2">@Model.chapter.TypeNavigation.Name</span>
+            }
+            else
+            {
+                <span id="type" class="col-10 mb-0 text-danger me-2">@Model.chapter.TypeNavigation.Name</span>
+            }
+        }
+        <span style="cursor:pointer"><i class="fa-regular fa-star fa-xs"></i></span>
+    </div>
+</div>
+<div class="output" style="text-align:center">
+
+</div>
+<div class="p-3" style="text-align:end">
+    <button class="btn btn-outline-dark" id="submit">Submit</button>
+</div>
+
+
+
+

@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewBag.Title = "SignUp";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@model Sudoku.Dtos.Incoming.UserSignupDto
+
+
+<style>
+    .Image_span {
+        border: 3px ridge;
+        border-radius: 50%;
+        width: 100%;
+        display: block;
+        background: #f0f0f0;
+        height: 209px;
+    }
+
+    #btn_img {
+        display: block;
+        margin: auto;
+        border: 1px;
+        margin-top: 34%;
+        width: 30%;
+        height: 18%;
+        background: none;
+    }
+
+    #img_icon {
+        width: 15%;
+        height: 15%;
+    }
+</style>
+<script>
+    function closeModal() {
+        document.getElementById('signUpDialog').close();
+    }
+</script>
+
+
+
+<div class="row">
+    <h2 class="col-11">Sign up</h2>
+    <a onclick="closeModal()" class="col-1 btn btn-danger" style="padding:10px">
+        <i class="fa-solid fa-xmark fa-2xl" style="color: #ffffff;"></i>
+    </a>
+</div>
+@using (Html.BeginForm("SignUp", "Users", FormMethod.Post, new { enctype = "multipart/form-data", @class = "row" }))
+{
+    <div class="col-6">
+
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.First_name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.First_name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.First_name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Last_name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Last_name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Last_name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-outline-secondary">Create new account</button>>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-6">
+        <div class="p-4">
+            <span id="image_span"  class="Image_span">
+                <button type="button" id="btn_img" onclick="profile_picture.click()">
+                    <i class="fa-solid fa-image" id="img_icon"></i>
+                </button>
+            </span>
+
+        </div>
+    </div>
+    <input onchange="previewImage()" id="profile_picture" type="file" class="form-control" name="file" style="display:none" accept=".jpg, .png" />
+
+}
+
+<script>
+    function previewImage() {
+        var fileInput = document.getElementById('profile_picture');
+        var imageSpan = document.getElementById('image_span');
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            imageSpan.style.backgroundImage = 'url(' + e.target.result + ')';
+            imageSpan.style.backgroundSize = 'cover';
+            imageSpan.style.backgroundRepeat = 'no-repeat';
+        }
+        reader.readAsDataURL(file);
+    }
+</script>
+

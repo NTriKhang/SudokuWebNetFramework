@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "ChapterDiscussion";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@{
+    Layout = null;
+}
+
+<style>
+    .m-w-100{
+        max-width: 100% !important;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    img {
+        width: -webkit-fill-available;
+    }
+</style>
+
+
+<div class="container">
+
+    <div class="row p-3 mb-5">
+
+        <input style="display:none" value="@ViewBag.chapterId" id="chapterId" />
+        <div class="col-11 pe-0">
+            <input class="form-control m-w-100" id="TextContent" placeholder="type in" name="TextContent" />
+        </div>
+        <div class="col-1">
+            <button disabled type="submit" id="submit" style="height:90%" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-up fa-xl"></i></button>
+        </div>
+    </div>
+
+    <div class="p-1" id="discussSection">
+
+    </div>
+</div>
+
+<script>
+    var text = document.getElementById('TextContent');
+
+    text.addEventListener('input', function () {
+        if (text.value.length > 0) {
+            document.getElementById('submit').disabled = false;
+        }
+        else {
+            document.getElementById('submit').disabled = true;
+        }
+    });
+    $(document).ready(function () {
+        var id = document.getElementById('chapterId').value;
+        $.ajax({
+            url: '/Discussions/SubChapterDiscussion/?chapterId=' + id,
+            type: 'get',
+            dateType: 'html',
+            success: function (data) {
+                //console.log(data);
+                $('#discussSection').html(data)
+            }
+        })
+    })
+
+
+    $('#submit').click(function () {
+        var data = {
+            ChapterId: document.getElementById('chapterId').value,
+            TextContent: text.value,
+        };
+        $.ajax({
+            url: '/discussions/chapterdiscussion',
+            type: 'post',
+            data: data,
+            dataType: 'html',
+            success: function (data) {
+                $('#discussSection').html(data)
+                text.value = "";
+            }
+        })
+    })
+</script>
+

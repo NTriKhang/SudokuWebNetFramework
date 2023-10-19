@@ -1,0 +1,106 @@
+﻿@model List<Sudoku.Models.Chapter>
+
+@{
+    ViewBag.Title = "AuthorFeatures";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Your public chapters</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Upsert", new { }, new { @class = "btn btn-primary" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Chapter name
+        </th>
+        <th>
+            Level
+        </th>
+        <th>
+            Point
+        </th>
+        <th>
+            Date post
+        </th>
+        <th></th>
+    </tr>
+
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model[i].Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[i].TypeNavigation.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[i].TypeNavigation.Point)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[i].CreateDate)
+            </td>
+            <td>
+                @{
+                    string editLink = "Upsert/" + Model[i].Id;
+                }
+                <a href="@editLink" class="btn btn-secondary me-1"><i class="fa-solid fa-pen-to-square"></i></a>
+                <button type="button" onclick="onDelete(this)" data-model-id="@Model[i].Id" class="btn btn-danger me-1"><i class="fa-regular fa-trash-can"></i></button>
+            </td>
+        </tr>
+    }
+
+</table>
+<div class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        @{
+            for (int i = 1; i <= ViewBag.PageQuantity; i++)
+            {
+                string link = "AuthorFeatures?page=" + i;
+                <li class="page-item">
+                    <a class="page-link" href=@link>@i</a>
+                </li>
+            }
+        }
+    </ul>
+</div>
+<script>
+    function onDelete(obj) {
+        var ele = $(obj);
+        var chapterId = ele.data("model-id");
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+
+                    url: '/Chapters/Delete/?id=' + chapterId,
+                    type: 'post',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            location.reload();
+                        }
+                        else {
+                            Swal.fire(
+                                'Not thing was deleted',
+                                'Something might wrong'
+                            )
+                        }
+                    }
+                })
+
+            }
+        })
+
+
+    }
+</script>

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Sudoku.Models.Submission>
+
+@{
+    ViewBag.Title = "UserSubmiss";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@foreach (var item in Model) {
+    <a href="/chapters/play/@item.ChapterId" style="text-decoration:none" class="btn btn-light w-100">
+        <div class="row">
+            <span class="col-3">
+                @Html.DisplayFor(modelItem => item.Chapter.Name)
+            </span>
+            <span class="col-3">
+                @Html.DisplayFor(modelItem => item.State)
+            </span>
+            <span class="col-1">
+                @Html.DisplayFor(modelItem => item.CompletedPercent)
+            </span>
+            <span class="col-5">
+                @Html.DisplayFor(modelItem => item.SubmitDate)
+            </span>
+        </div>
+    </a>
+    <hr />
+}
+

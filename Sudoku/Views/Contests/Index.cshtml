@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Sudoku.Dtos.Outgoing.ContestDto>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .room {
+        text-decoration: none;
+        color: black;
+    }
+    .room:hover {
+        color: black;
+        background-color: whitesmoke;
+    }
+</style>
+@{
+    if (ViewBag.Conflict != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Conflict
+        </div>
+    }
+}
+<div class="container">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <p class="col-3 ps-3">
+                    Name
+                </p>
+                <p class="col-3 ps-3">
+                    Point
+                </p>
+                <p class="col-3 ps-3">
+                    Joined
+                </p>
+                <p class="col-3 ps-3">
+                    Level
+                </p>
+            </div>
+        </div>
+        <div class="card-body">
+
+            @foreach (var item in Model)
+            {
+                string link = "/Contests/Room?roomId=" + item.Id;
+                <a class="row mb-2 room" href="@link">
+                    <p class="col-3  ps-3">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </p>
+                    <p class="col-3  ps-3">
+                        @Html.DisplayFor(modelItem => item.Point)
+                    </p>
+                    <p class="col-3  ps-3">
+                        @Html.DisplayFor(modelItem => item.NumberOfJoined)
+                    </p>
+                    <p class="col-3 ps-3">
+                        @Html.DisplayFor(modelItem => item.Level)
+                    </p>
+                </a>
+                <hr />
+            }
+            <p class="d-flex justify-content-end pe-4 m-0">
+                @Html.ActionLink("New room", "Create", new { }, new { @class = "btn btn-secondary" })
+            </p>
+        </div>
+    </div>
+
+</div>

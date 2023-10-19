@@ -1,0 +1,38 @@
+﻿@model List<Sudoku.Models.ServicePack>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        @for(int i = 0; i < Model.Count();i++)
+        {
+            <div class="col-4">
+                @using (Html.BeginForm("Checkout", "RoleManage", FormMethod.Post))
+                {
+                    <input hidden value="@Model[i].ID" name="ID" />
+                    <input hidden value="@Model[i].Fee" name="Fee" />
+                    <input hidden value="@Model[i].PostsPerDay" name="PostsPerDay" />
+                    <div class="p-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Benefics</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Fee: @Model[i].Fee$</li>
+                                    <li>Post @Model[i].PostsPerDay chaters per day</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-success">Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+

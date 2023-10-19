@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .border-chapter {
+        border: 1px solid black;
+        border-radius: 8px;
+        padding: 30px 10px 30px 10px;
+    }
+
+    .chapter-type {
+        justify-content: flex-end;
+        display: flex;
+    }
+
+</style>
+
+<div class="row p-4">
+    <div class="col-8" id="chapterSection">
+
+    </div>
+    <div class="col-4">
+        <div class="container">
+            <div style=" border-radius: 8px;">
+                <div class="p-3 pe-0" style="text-align: end">
+                    @Html.ActionLink("Author features", "AuthorFeatures", new { }, new { @class = "btn btn-success" })
+                </div>
+                <hr class="mt-0" />
+                <div class="p-2 mb-2">
+                    <h5 style="font-weight:700">Weekly ranking</h5>
+                    <div id="yourRank" class="mb-4">
+
+                    </div>
+                    <div id="WeeklyRank">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Left_side{
+
+    <input id="chapterName" type="text" class="form-control mb-2" name="chapterName" placeholder="Name Chapter" />
+    <button class="btn btn-success" type="submit" onclick="getChapter(1)">Search</button>
+
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            getChapter(1)
+            $.ajax({
+                url: '/ranks',
+                type: 'get',
+                success: function (response) {
+                    $('#WeeklyRank').html(response)
+                }
+            })
+
+            $.ajax({
+                url: '/ranks/userRank',
+                type: 'get',
+                success: function (response) {
+                    $('#yourRank').html(response)
+                }
+            })
+
+        })
+
+        function getChapter(page) {
+            var chapterName = $('#chapterName').val();
+            console.log(chapterName)
+            $.ajax({
+                url: '/chapters/chapters/?page=' + page + '&chapterName=' + chapterName,
+                type: 'get',
+                typeof: 'html',
+                success: function (response) {
+                    $('#chapterSection').html(response)
+                }
+            })
+        }
+    </script>
+}

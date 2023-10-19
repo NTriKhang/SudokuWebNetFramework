@@ -1,0 +1,21 @@
+﻿.box {
+    display: inline-block;
+    border: 1px solid;
+    padding: 2px;
+    width: 6%;
+    aspect-ratio: 1 / 1;
+    text-align: center;
+    margin: 2px;
+}
+
+.border-upper {
+    border: 3px solid;
+}
+
+.text-black {
+    color: black;
+}
+
+.text-red {
+    color: red;
+}

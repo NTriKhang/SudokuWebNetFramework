@@ -1,0 +1,101 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <style>
+        dialog {
+            border: 1px double gray;
+            border-radius: 45px;
+            width: 50%;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    @model Sudoku.Dtos.Incoming.UserLoginDto
+
+    @{
+        ViewBag.Title = "Login";
+        var errorMessage = TempData["ErrorMessage"] as string;
+    }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+
+    <div class="container w-25" style="padding-top:50px">
+        <div class="card">
+            <div class="card-header">
+                <h2>Login</h2>
+            </div>
+
+            <div class="card-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal" style="padding:22px">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control mb-3", placeholder = "Email" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control mb-3", type = "password", placeholder = "Password" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-outline-secondary d-block w-100">Login</button>
+                            <hr />
+                            <button type="button" class="btn btn-outline-secondary d-block w-50" style="margin:auto" id="SignUp">SignUp</button>
+
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+    <dialog id="signUpDialog">
+
+        @*render a page with it own modal*@
+
+    </dialog>
+</body>
+</html>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+
+    $("#SignUp").click(function () {
+        $.ajax({
+            url: "/Users/SignUp",
+            type: "get",
+            dataType: 'html',
+            success: function (data) {
+                $('#signUpDialog').html(data);
+                document.getElementById("signUpDialog").showModal();
+
+            }
+        })
+    })
+</script>

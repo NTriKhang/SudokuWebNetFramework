@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewBag.Title = "UsersSide";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+@model IEnumerable<Sudoku.Dtos.Outgoing.UserDto>
+
+<style>
+    .options {
+        border: 4px ridge black;
+        border-radius: 9px;
+    }
+
+        .options a {
+            text-decoration: none;
+            color: black;
+            padding: 5px;
+        }
+
+    .options-box {
+        z-index: 1;
+        width: 10%;
+    }
+</style>
+
+<div class="card">
+
+    <div class="card-body" style="height: 450px; overflow-y: scroll;">
+        @{
+            foreach (var user in Model)
+            {
+                string img_path = user.Profile_Image;
+                <div class="mb-3">
+                    <div class="w-100" style="align-items:baseline">
+                        <div>
+                            <img class="" src="@img_path" title="i" style="height: 45px" />
+                        </div>
+                        <div class="row">
+                            <div class="col-7">@user.First_name @user.Last_name</div>
+                            <div class="col-2">
+                                @{
+                                    if (ViewBag.UserId != user.Id)
+                                    {
+
+
+                                        <div class="btn options_btn" type="button">
+                                            <i class="fa-solid fa-bars"></i>
+
+                                            <div class="position-fixed options-box" style="visibility:hidden">
+                                                <div class="options">
+                                                    <a class="d-block border-0 btn btn-light">Profile</a>
+                                                    @{
+                                                        if (ViewBag.RoomOwnId == ViewBag.UserId)
+                                                        {
+                                                            <a class="d-block border-0 btn btn-danger text-white">Kick</a>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                            <hr class="mt-2" />
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            }
+        }
+
+    </div>
+</div>
+
+
+@section scripts_nonlayout{
+    <script>
+        $(document).ready(function () {
+
+        })
+
+        $('.options_btn').click(function () {
+            var box = $(this).find('.options-box');
+            if (box.css('visibility') == 'hidden') {
+                box.css('visibility', 'visible')
+            }
+            else {
+                box.css('visibility', 'hidden')
+            }
+        })
+    </script>
+}

@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "UserProfile";
+}
+@model Sudoku.Dtos.Outgoing.UserDto
+
+<style>
+    .Section {
+        border: 1px ridge;
+        border-radius: 8px;
+        background-color: white;
+        padding: 20px 5px;
+        height: 50%;
+        max-height: 300px;
+    }
+    .w-63{
+        width: 63%!important;
+    }
+    dialog {
+        border: 1px double gray;
+        border-radius: 45px;
+        width: 50%;
+        padding: 40px;
+    }
+</style>
+<div class="p-4">
+    <div class="row">
+        <div class="col-4 me-3" style="text-align: center">
+            <img class="w-100" src="@Model.Profile_Image" style="height: 200px; border-radius: 50%" />
+            <h3 class="mt-2">@Model.First_name @Model.Last_name</h3>
+            <div class="ps-5 pe-3" style="text-align:start">
+                <span><strong>Email: </strong>@Model.Email</span> <br />
+                <span><strong>Point: </strong>@Model.Point</span> <br />
+                <button id="EditProfile" type="button" class="btn btn-outline-dark mt-3">Edit profile</button>
+            </div>
+            
+        </div>
+        <div class="col-7 w-63">
+            <div class="Section mb-3" id="SubmitSection" style="overflow-y: scroll">
+
+            </div>
+            <div class="Section mb-3" id="DiscussSection" style="overflow-y: scroll">
+
+            </div>
+        </div>
+    </div>
+</div>
+<dialog id="EditProfileModal" class="w-50">
+
+</dialog>
+
+
+@section scripts{
+    <script>
+        var pageDiscuss = 1;
+        var pageSubmiss = 1;
+        var isMoreDiscusss = true;
+        var isMoreSubmiss = true;
+
+        $(document).ready(function () {
+            getSubmit();
+            getDiscuss(1);
+        })
+        $("#EditProfile").click(function () {
+            $.ajax({
+                url: "/Users/EditProfile",
+                type: "get",
+                dataType: 'html',
+                success: function (data) {
+                    $('#EditProfileModal').html(data);
+                    document.getElementById("EditProfileModal").showModal();
+
+                }
+            })
+        })
+        $('#DiscussSection').on('scroll', function () {
+            var bottomPos = $(this).prop('scrollHeight') - ($(this).scrollTop() + $(this).height())
+            if (bottomPos < 41 && isMoreDiscusss) {
+                console.log(true)
+                getDiscuss(++pageDiscuss)
+            }
+        })
+        $('#SubmitSection').on('scroll', function () {
+            var bottomPos = $(this).prop('scrollHeight') - ($(this).scrollTop() + $(this).height())
+            if (bottomPos < 41 && isMoreDiscusss) {
+                console.log(true)
+                getDiscuss(++pageSubmiss)
+            }
+        })
+        function getSubmit(page) {
+            $.ajax({
+                url: '/submissions/UserSubmiss/?page=' + page,
+                type: 'get',
+                success: function (response) {
+                    var discussScrollHeight = $('#SubmitSection').prop('scrollHeight')
+                    $('#SubmitSection').html(response)
+                    if (discussScrollHeight == $('#SubmitSection').prop('scrollHeight')) {
+                        isMoreSubmiss = false
+                    }
+                }
+            })
+        }
+        function getDiscuss(page) {
+            $.ajax({
+                url: '/discussions/UserDiscussion/?page=' + page,
+                type: 'get',
+                success: function (response) {
+                    var discussScrollHeight = $('#DiscussSection').prop('scrollHeight')
+                    $('#DiscussSection').append(response)
+                    if (discussScrollHeight == $('#DiscussSection').prop('scrollHeight')) {
+                        isMoreDiscusss = false
+                    }
+                }
+            })
+        }
+
+    </script>
+}
+

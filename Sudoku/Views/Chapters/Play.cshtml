@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "Play";
+}
+<link href="~/Content/ChapterPlaySection/ChapterPlaySection.css" rel="stylesheet" />
+<link href="~/Content/Grid/grid.css" rel="stylesheet" />
+
+
+<div class="container">
+    <div class="row p-3">
+        <div class="col-9">
+            <div class="container-fluid bg-white">
+                <div class="subnav">
+                    <div class="mb-2 mb-lg-0 d-flex justify-content-around" style="font-weight:600">
+                        <button onclick="getChapter()" class="btn btn-light">Riddle</button>
+                        <button class="btn btn-light" id="viewDiscussions">Discussions</button>
+                        <button class="btn btn-light" id="viewSubmissions">Submissions</button>
+                    </div>
+                </div>
+                <hr class="mt-0" />
+                <div id="renderPart">
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="container-fluid">
+                <div class="p-3">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input hidden id="ChapterId" value="@ViewBag.id" />
+
+@section scripts{
+    <script src="~/Scripts/SudokuGrid/SudokuGrid.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            getChapter();
+        });
+
+
+        $('#viewSubmissions').click(function () {
+            $.ajax({
+                url: '/submissions/index/?chapterId=' + chapterId,
+                type: 'get',
+                success: function (data) {
+                    $('#renderPart').html(data);
+                }
+            })
+        });
+
+        $('#viewDiscussions').click(function () {
+            $.ajax({
+                url: '/discussions/chapterDiscussion/?chapterId=' + chapterId,
+                type: 'get',
+                success: function (data) {
+                    $('#renderPart').html(data);
+                }
+            })
+        });
+
+        function getChapter() {
+            var id = document.getElementById('ChapterId').value;
+            $.ajax({
+                url: '/Chapters/GetChapter/?chapterId=' + id,
+                type: 'get',
+                dataType: 'html',
+                success: function (data) {
+                    $('#renderPart').html(data);
+                }
+            })
+        };
+    </script>
+} 

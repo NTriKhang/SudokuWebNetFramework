@@ -1,0 +1,315 @@
+﻿@model Sudoku.Dtos.Outgoing.ChapterUpsertDto
+
+
+<link rel="stylesheet" href="~/Content/Grid/grid.css" />
+<style>
+    dialog {
+        border: 1px double gray;
+        border-radius: 45px;
+        width: 70%;
+        padding: 40px;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.EditorFor(x => x.ChapterId, new { htmlAttributes = new { @style = "display:none" } })
+    @Html.EditorFor(model => model.Chap_file_name, new { htmlAttributes = new { @class = "form-control", @style = "display: none" } })
+
+
+    <div class="form-horizontal">
+        <div>
+            <h4>Chapter</h4>
+            <span>Your remain: @Model.RemainPost</span>
+        </div>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group mb-3 col-6">
+            @Html.LabelFor(model => model.Type_id, "Chapter type", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Type_id, Model.ChapterType, htmlAttributes: new { @class = "form-control dropdown-toggle" })
+                @Html.ValidationMessageFor(model => model.Type_id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group mb-3 col-6">
+            @Html.LabelFor(model => model.Name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+
+        <div class="form-group mb-3">
+            <fieldset class="mb-3">
+                <div style="text-align:start">
+                    <button id="generateRiddle" type="button" class="test btn btn-outline-secondary">Generate riddle</button>
+                </div>
+                <div class="output" style="text-align:center">
+
+                </div>
+            </fieldset>
+
+            <div class="col-md-offset-2" style="text-align: center">
+                <button id="test" type="button" class="btn btn-secondary" disabled>Test</button>
+            </div>
+        </div>
+
+
+        <div class="form-group mb-3">
+            <div class="col-md-offset-2 col-md-10">
+                <button id="submit" type="button" class="btn btn-primary" disabled>Create</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "AuthorFeatures")
+</div>
+<dialog id="solveRiddle">
+    <div class="row mb-3">
+        <h5 class="col-11"></h5>
+        <a onclick="closeModal()" class="col-1 btn btn-danger" style="padding:10px">
+            <i class="fa-solid fa-xmark fa-2xl" style="color: #ffffff;"></i>
+        </a>
+
+        <div class="solveExp mb-4" style="text-align:center">
+
+        </div>
+        <button id="runTest" class="btn btn-outline-dark">Run test</button>
+    </div>
+</dialog>
+
+
+@section scripts{
+    <script src="~/Scripts/SudokuGrid/SudokuGrid.js"></script>
+
+    <script>
+        var fileRiddleName = 'empty';
+        var rows, columns;
+        var acceptRiddle;
+        var isGenerate = false;
+
+        function drawGridForCreate(sudokuArr) {
+
+            drawGrid('output',sudokuArr, rows, columns, true);
+            var query = document.getElementsByClassName('box');
+            var elements = Array.from(query)
+
+            elements.forEach(element => {
+                element.addEventListener('click', function () {
+                    isGenerate = false;
+                    element.style.fontWeight = '400';
+                });
+            });
+        }
+        function submitChapter() {
+            var jsonData = JSON.stringify(sudokuArr)
+            var typeOption = document.getElementById('Type_id')
+            var data = {
+                Chap_file_name: document.getElementById('Chap_file_name').value,
+                ChapterId: document.getElementById('ChapterId').value,
+                Name: document.getElementById('Name').value,
+                SudokuString: jsonData,
+                Type_id: typeOption.options[typeOption.selectedIndex].value
+            };
+            $.ajax({
+                url: '/chapters/upsert',
+                type: 'post',
+                data: data,
+                success: function (response) {
+                    if (response.code == 200) {
+                        location.href = "@Url.Action("AuthorFeatures")"
+                    }
+                    else {
+                        alert(response.msg)
+                    }
+                }
+            })
+        }
+        $(document).ready(function () {
+            var chapterId = document.getElementById('ChapterId').value;
+            if (chapterId != '') {
+                document.getElementById('submit').disabled = false;
+                isGenerate = true;
+            }
+            const select = document.getElementById('Type_id');
+            var type = select.options[select.selectedIndex].text
+            if (type == 'Hard') {
+                rows = 9, columns = 9;
+            }
+            else if (type == 'Medium') {
+                rows = 7, columns = 7;
+            }
+            else {
+                rows = 5, columns = 5;
+            }
+            acceptRiddle = Math.ceil((rows * columns) / 9);
+            drawGridForCreate(@ViewBag.SudokuArr);
+        });
+
+        $('#generateRiddle').click(function () {
+            document.querySelector('fieldset').disabled = true;
+            $.ajax({
+                url: '/chapters/generateRiddle/?rows=' + rows,
+                type: 'get',
+                success: function (response) {
+                    var formattedString = response.sudokuString.replace(/[\[\]]/g, ''); // Remove square brackets
+                    const parsedArray = formattedString.split(',').map(Number);
+
+                    const charArray = [];
+                    for (let i = 0; i < 9; i++) {
+                        const row = parsedArray.slice(i * 9, i * 9 + 9);
+                        const charRow = row.map(num => String.fromCharCode(num + 48));
+                        charArray.push(charRow);
+                    }
+                    const query = document.querySelector('.output')
+                    while (query.firstChild) {
+                        query.removeChild(query.firstChild);
+                    }
+                    sudokuArr = charArray;
+                    drawGridForCreate(sudokuArr)
+                    document.querySelector('fieldset').disabled = false;
+
+                    isGenerate = true;
+                    document.getElementById('generateRiddle').disabled = true;
+
+                    document.getElementById('test').disabled = false;
+                    document.getElementById('submit').disabled = false;
+                }
+            })
+
+
+        })
+
+        $('#test').click(function () {
+            //console.log(sudokuArr)
+            var jsonData = JSON.stringify(sudokuArr)
+
+            var data = {
+                sudokuString : jsonData,
+                rows : rows,
+                columns : columns
+            }
+            $.ajax({
+                url: '/chapters/testConflict/',
+                type: 'post',
+                data: data,
+                success: function (response) {
+                    if (response.code == 200) {
+                        alert(response.msg);
+                        document.getElementById('submit').disabled = false;
+                    }
+                    else {
+                        var errorEle = document.getElementById(response.row + ' ' + response.column);
+                        errorEle.style.color = 'red'
+                        alert(response.msg);
+                        document.getElementById('submit').disabled = true;
+
+                    }
+                }
+            })
+        });
+
+        //$('#save').click(function () {
+        //    var data = sudokuArr;
+        //    var jsonData = JSON.stringify(data)
+        //    var data = {
+        //        sudokuString : jsonData,
+        //        fileName : fileRiddleName
+        //    }
+        //    $.ajax({
+        //        url: '/chapters/save',
+        //        type: 'post',
+        //        data: data,
+        //        success: function (data) {
+        //            if (data.code == 200) {
+        //                alert(data.msg);
+        //                fileRiddleName = data.name_file;
+        //                var file = document.getElementById('Chap_file_path');
+        //                file.value = fileRiddleName;
+        //                document.getElementById('submit').disabled = false;
+
+        //            }
+
+        //        }
+        //    })
+        //});
+        $('#Type_id').change(function () {
+            const select = document.getElementById('Type_id');
+            var type = select.options[select.selectedIndex].text
+            if (type == 'Hard') {
+                rows = 9, columns = 9;
+            }
+            else if (type == 'Medium') {
+                rows = 7, columns = 7;
+            }
+            else {
+                rows = 5, columns = 5;
+            }
+            acceptRiddle = Math.ceil((rows * columns) / 9);
+            document.getElementById('test').disabled = true;
+            document.getElementById('submit').disabled = true;
+            const query = document.querySelector('.output')
+            while (query.firstChild) {
+                query.removeChild(query.firstChild);
+            }
+            drawGridForCreate(@ViewBag.DefaultSudoku, rows, columns)
+            sudokuArr = @ViewBag.sudokuArr;
+            document.getElementById('generateRiddle').disabled = false;
+            document.getElementById('generateRiddle').textContent = 'Generate riddle';
+
+        })
+
+    </script>
+
+    <script>
+        var sudokuArrForTest;
+        $('#submit').click(function () {
+            if (isGenerate == false) {
+                const query = document.querySelector('.solveExp')
+                while (query.firstChild) {
+                    query.removeChild(query.firstChild);
+                }
+                document.getElementById('solveRiddle').showModal();
+                sudokuArrForTest = sudokuArr.map(row => [...row])
+                drawGrid('solveExp', sudokuArr, rows, columns);
+            }
+            else {
+                submitChapter();
+            }
+        })
+        function closeModal() {
+            sudokuArr = sudokuArrForTest;
+            document.getElementById('solveRiddle').close();
+        }
+        $('#runTest').click(function () {
+            //console.log(sudokuArr)
+            var jsonData = JSON.stringify(sudokuArr)
+
+            var data = {
+                sudokuString: jsonData,
+                rows: rows,
+                columns: columns
+            }
+            $.ajax({
+                url: '/chapters/testConflict/',
+                type: 'post',
+                data: data,
+                success: function (response) {
+                    if (response.code == 200) {
+                        alert(response.msg);
+                        sudokuArr = sudokuArrForTest;
+                        console.log(sudokuArr)
+                        submitChapter();
+                    }
+                    else {
+                        alert(response.msg);
+
+                    }
+                }
+            })
+        });
+    </script>
+}

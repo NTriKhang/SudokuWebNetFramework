@@ -1,0 +1,235 @@
+﻿
+@{
+    ViewBag.Title = "Room";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    dialog {
+        border: 1px double gray;
+        border-radius: 45px;
+        width: 40%;
+        padding: 40px;
+    }
+</style>
+@model Sudoku.Controllers.RoomDto
+
+<div class="container">
+    <input value="@Model.roomId" style="display:none" id="roomId" title="i" placeholder="i" />
+    <input value="@Model.userId" style="display:none" id="userId" title="i" placeholder="i" />
+    <input value="@Model.roomOwnId" style="display:none" id="roomOwnId" title="i" placeholder="i" />
+    <div class="row p-2">
+        <div class="col-4 p-4 bg-white">
+            <div class="card-header d-flex justify-content-end">
+                <button type="button" id="reload" class="btn btn-danger" style="display: none"><i class="fa-solid fa-spinner fa-fade fa-2xs"></i></button>
+            </div>
+            <div id="usersSection">
+
+            </div>
+            <button type="button" id="join_room" class="btn btn-secondary w-100 mt-2">Join Room</button>
+            <button type="button" id="quit_room" class="btn btn-danger w-100 mt-2" disabled>Quit</button>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-7 p-4 bg-white">
+
+            <div id="sudokuSection">
+                <div style="display: flex; justify-content: center; align-items: center; height: 450px;">
+                    @{
+                        if (Model.userId == Model.roomOwnId)
+                        {
+                            <button id="start" class="btn btn-primary">Start</button>
+                        }
+                        else
+                        {
+                            <span>Wait for room's owner</span>
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <dialog id="notifyContestEnd">
+        <div class="p-5">
+            <img id="userImage" src="~/wwwroot/ProfileImage/UserNoImage.jpg" style="width: -webkit-fill-available;" />
+        </div>
+        <div style="text-align: center">
+            <h5 class="text-success" id="userName">won this contest</h5><br />
+            <a class="btn btn-outline-dark" href="/contests/index">Close</a>
+        </div>
+    </dialog>
+</div>
+
+
+@section scripts{
+
+    <script src="~/Scripts/jquery.signalR-2.4.3.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+
+        var contest = $.connection.contestHub;
+        console.log(contest)
+        var beginState = false;
+
+        $(function () {
+
+            getUsers();
+
+
+            var roomId = document.getElementById('roomId').value;
+            var roomOwnId = document.getElementById('roomOwnId').value;
+            var userId = document.getElementById('userId').value;
+
+
+            contest.client.Notificate = function (code) {
+                console.log(code)
+                if (code == 200) {
+                    $('#reload').css("display", "block");
+                }
+            };
+            contest.client.RoomCreateSuccessfully = function (data) {
+                console.log(data.code)
+                if (data.code == 200) {
+                    alert(data.id)
+                }
+            };
+            contest.client.Disperse = function (code) {
+                console.log(code)
+                if (code == 200) {
+                    contest.server.quitRoom(roomId, roomOwnId)
+                    location.href = "/Contests/Index";
+                }
+            }
+            contest.client.TakeRiddle = function (data) {
+                console.log(data.riddle)
+                $.ajax({
+                    url: '/contests/SudokuSide',
+                    type: 'post',
+                    data: data,
+                    success: function (data) {
+                        console.log("take riddle success")
+                        $('#sudokuSection').html(data);
+                        beginState = true;
+
+                    }
+                })
+            }
+            contest.client.NotifyEndContest = function (userName, userImage) {
+                console.log(userName)
+                console.log(userImage)
+                document.getElementById('notifyContestEnd').showModal();
+                $('#userImage').attr("src", userImage);
+                var text = userName + " win this contest"
+                $('#userName').text(text)
+            }
+
+            $.connection.hub.start().done(function () {
+
+
+                if (roomOwnId == userId) {
+                    contest.server.createRoom(roomId);
+                    $('#join_room').prop('disabled', true)
+                    $('#quit_room').prop('disabled', false)
+                }
+                $('#start').click(function () {
+                    $.ajax({
+                        url: '/contests/start',
+                        type: 'get',
+                        success: function (response) {
+                            if (response.code == 200) {
+                                getRiddle();
+                            }
+                            else {
+                                alert(response.msg)
+                            }
+                        }
+                    })
+                })
+                $('#join_room').click(function () {
+                    //console.log(roomId);
+                    var data = {
+                        roomId: roomId
+                    }
+                    $.ajax({
+                        url: '/contests/joinRoom',
+                        type: 'post',
+                        data: data,
+                        success: function (response) {
+                            if (response.code == 200) {
+                                getUsers();
+                                contest.server.joinRoom(roomId);
+                                $('#join_room').prop('disabled', true)
+                                $('#quit_room').prop('disabled', false)
+
+                            }
+                            else {
+                                alert(response.msg)
+                            }
+                        }
+                    })
+
+                })
+                $('#quit_room').click(function () {
+                    var data = {
+                        roomId: roomId
+                    }
+                    $.ajax({
+                        url: '/contests/quitRoom',
+                        type: 'post',
+                        data: data,
+                        success: function (response) {
+                            console.log(response.code)
+                            if (response.code == 200) {
+                                if (userId != roomOwnId || beginState == true) {
+                                    contest.server.quitRoom(roomId, null);
+                                }
+                                else {
+                                    contest.server.quitRoom(roomId, roomOwnId);
+                                }
+                                location.href = '/contests/index'
+                            }
+                            else {
+                                contest.server.quitRoom(roomId, null);
+                                location.href = '/contests/index'
+                            }
+                        }
+                    })
+                })
+            });
+
+
+        })
+        $('#reload').click(function () {
+            getUsers();
+            $('#reload').css("display", "none");
+        })
+
+        function getRiddle() {
+            $.ajax({
+                url: '/contests/GenerateRiddle?roomId=' + $('#roomId').val(),
+                type: 'get',
+                success: function (response) {
+                    if (response.code == 200) {
+                        rows = response.rows;
+                        contest.server.startContest($('#roomId').val(), response.riddle, rows)
+
+                    }
+
+                }
+            })
+        }
+        function getUsers() {
+            var roomId = document.getElementById('roomId').value;
+            $.ajax({
+                url: '/contests/usersSide?roomId=' + roomId,
+                type: 'get',
+                success: function (data) {
+                    $('#usersSection').html(data)
+                }
+            })
+        }
+
+    </script>
+
+
+}

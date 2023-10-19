@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "SubChapterDiscussion";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+@model Sudoku.Dtos.Outgoing.DiscussionDto
+
+@{
+    if (Model.Discuss != null)
+    {
+        foreach (var item in Model.Discuss)
+        {
+            <div class="mb-2">
+                <div class="row">
+                    <div class="col-1 pe-0">
+                        <img src="~/wwwroot/ProfileImage/UserNoImage.jpg" />
+                    </div>
+                    <div class="col-3">
+                        <h5 class="l-h-200">@item.UserName</h5>
+                    </div>
+                    <div class="col-7">
+                        <p class="l-h-200">@item.Date</p>
+                    </div>
+                    @if (item.UserId == Model.CurrentUserId)
+                    {
+                        <div class="col-1">
+                            <button data-model-id="@item.DiscussId" type="button" onclick="Delete(this)" class="btn btn-outline-danger"><i class="fa-solid fa-eraser"></i></button>
+                        </div>
+                    }
+                </div>
+                <div class="p-2">
+                    <p>@item.TextContent</p>
+                </div>
+                <hr />
+            </div>
+        }
+    }
+    else
+    {
+        <div style="text-align:center">
+            <span>-- This riddle doesn't have any discuss --</span>
+        </div>
+    }
+}
+    <script>
+
+        function Delete(obj) {
+            var ele = $(obj);
+            var discussId = ele.data("model-id");
+            var chapterId = document.getElementById('chapterId').value;
+            var data = {
+                chapterId: chapterId,
+                discussId : discussId
+            }
+            $.ajax({
+                url: '/discussions/delete',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                type: 'post',
+                dataType: 'html',
+                success: function (data) {
+                    $('#discussSection').html(data)
+
+                }
+            })
+        }
+
+    </script>    

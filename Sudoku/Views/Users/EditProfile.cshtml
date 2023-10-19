@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "SignUp";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@model Sudoku.Dtos.Incoming.UserEditDto
+
+
+<style>
+    .Image_span {
+        border: 3px ridge;
+        border-radius: 50%;
+        width: 100%;
+        display: block;
+        background: #f0f0f0;
+        height: 209px;
+    }
+
+    #btn_img {
+        display: block;
+        margin: auto;
+        border: 1px;
+        margin-top: 34%;
+        width: 30%;
+        height: 18%;
+        background: none;
+    }
+
+    #img_icon {
+        width: 15%;
+        height: 15%;
+    }
+</style>
+<script>
+    function closeModal() {
+        document.getElementById('EditProfileModal').close();
+    }
+</script>
+
+
+
+<div class="row">
+    <h2 class="col-11">Sign up</h2>
+    <a onclick="closeModal()" class="col-1 btn btn-danger" style="padding:10px">
+        <i class="fa-solid fa-xmark fa-2xl" style="color: #ffffff;"></i>
+    </a>
+</div>
+<div class="row p-4">
+    <div class="col-6">
+
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <div class="col-md-offset-2 col-md-10">
+                    <button id="Save" type="button" class="btn btn-outline-secondary">Save</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-6">
+        <div class="p-4">
+
+            <span id="image_span" class="Image_span" style="background-image: url(@Model.ProfileImageUrl); background-size:cover; background-repeat: no-repeat">
+                <button type="button" id="btn_img" onclick="profile_picture.click()">
+                    <i class="fa-solid fa-image" id="img_icon"></i>
+                </button>
+            </span>
+
+        </div>
+    </div>
+</div>
+<input onchange="previewImage()" id="profile_picture" type="file" class="form-control" name="file" style="display:none" accept=".jpg, .png" />
+<input id="Id" value="@Model.Id" style="display:none"/>
+<script>
+    $(document).ready(function () {
+
+    })
+    $('#Save').click(function () {
+
+        var fileInput = $('#profile_picture').get(0);
+        var file = fileInput.files[0];
+        console.log(file)
+
+        var formdata = new FormData(); //FormData object
+
+        formdata.append('file', file);
+        formdata.append('Id', $('#Id').val());
+        formdata.append('FirstName', $('#FirstName').val());
+        formdata.append('LastName', $('#LastName').val());
+        formdata.append('Email', $('#Email').val());
+
+
+
+        $.ajax({
+            url: '/users/EditProfile',
+            type: 'post',
+            contentType: false, // Not to set any content header  
+            processData: false, // Not to process data  
+            data: formdata,
+            success: function (response) {
+                console.log(response.code)
+                if (response.code == 200) {
+                    location.reload();
+                }
+                else {
+                    alert(response.msg)
+                }
+            }
+        })
+    })
+    function previewImage() {
+        var fileInput = document.getElementById('profile_picture');
+        var imageSpan = document.getElementById('image_span');
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            imageSpan.style.backgroundImage = 'url(' + e.target.result + ')';
+            imageSpan.style.backgroundSize = 'cover';
+            imageSpan.style.backgroundRepeat = 'no-repeat';
+        }
+        reader.readAsDataURL(file);
+    }
+</script>
+

@@ -1,0 +1,62 @@
+﻿
+<style>
+    .personal-section {
+        position: absolute;
+        right: 0;
+        color: black;
+        border: 1px ridge antiquewhite;
+        background: whitesmoke;
+        margin-top: 12px;
+        border-radius: 6px;
+        list-style: none;
+        width: 230px;
+        padding: 10px;
+    }
+
+    .w-15 {
+        width: 15%;
+    }
+
+    .personal-section li {
+        border-radius: 5px;
+        text-align: start;
+    }
+
+        .personal-section li:hover {
+            background-color: gainsboro;
+            color: #0d6efd !important;
+        }
+
+            .personal-section li:hover a {
+                color: #0d6efd !important;
+            }
+
+    .personal-section a {
+        text-decoration: none;
+        color: black;
+        display: block;
+        width: 100%;
+    }
+</style>
+
+    <ul id="personal-section-option" class="personal-section" style="visibility:hidden">
+        <li class="mb-3 p-2"><a href="/Users/UserProfile"><i class="fa-solid fa-address-card fa-xl w-15"></i> <span class="ms-2">Profile</span></a></li>
+        <li><hr class=""></li>
+        <li class="mb-3 p-2"><a href="/Users/Logout"><i class="fa-solid fa-right-from-bracket fa-xl w-15"></i><span class="ms-2">Logout</span></a></li>
+    </ul>
+
+<script>
+    function showPersonalList() {
+        var psl = document.getElementById("personal-section-option")
+        console.log(psl)
+        if (psl.style.visibility == 'visible') {
+            psl.style.visibility = 'hidden'
+        }
+        else {
+            psl.style.visibility = 'visible'
+        }
+    }
+
+
+</script>
+

@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+@model IEnumerable<Sudoku.Models.Submission>
+
+
+@{
+    Layout = null;
+}
+
+<link href="~/Content/ChapterPlaySection/ChapterPlaySection.css" rel="stylesheet" />
+
+
+<div class="container pb-3">
+    <div class="d-flex justify-content-between p-3">
+        <p class="d-inline">
+            State
+        </p>
+        <p class="d-inline">
+            Complete Percent
+        </p>
+        <p class="d-inline">
+            Submit Date
+        </p>
+    </div>
+
+    @foreach (var item in Model)
+    {
+        <button type="button" onclick="viewDetail(this)" data-model-id="@item.ID" class="btn btn-light w-100 d-flex justify-content-between">
+            <p class="d-inline">
+                @Html.DisplayFor(modelItem => item.State)
+            </p>
+            <p class="d-inline">
+                @Html.DisplayFor(modelItem => item.CompletedPercent)
+            </p>
+            <p class="d-inline">
+                @Html.DisplayFor(modelItem => item.SubmitDate)
+            </p>
+        </button>
+    }
+
+</div>
+<script>
+    function viewDetail(obj) {
+        var ele = $(obj);
+        var submissionId = ele.data("model-id");
+        $.ajax({
+            url: '/Submissions/Details/?id=' + submissionId,
+            type: 'get',
+            typeof: 'html',
+            success: function (data) {
+                $('#renderPart').html(data);
+            }
+
+        })
+    }
+</script>

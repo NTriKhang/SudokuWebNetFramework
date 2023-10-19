@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Sudoku.Models.Chapter>
+
+@{
+    ViewBag.Title = "Chapters";
+    Layout = "~/Views/Shared/_NoneLayoutPage.cshtml";
+}
+
+<style>
+
+    a {
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    string link = "/Chapters/Play?id=" + item.Id;
+    <a class="row border-chapter bg-white mb-2" href=@link>
+        <div class="col-8">
+            <h4>@item.Name</h4>
+        </div>
+        @if (item.TypeNavigation.Name == "Easy")
+        {
+            <div class="col-3 chapter-type text-success">
+                <h4>@item.TypeNavigation.Name</h4>
+            </div>
+        }
+        else if (item.TypeNavigation.Name == "Medium")
+        {
+            <div class="col-3 chapter-type text-warning">
+                <h4>@item.TypeNavigation.Name</h4>
+            </div>
+        }
+        else
+        {
+            <div class="col-3 chapter-type text-danger">
+                <h4>@item.TypeNavigation.Name</h4>
+            </div>
+        }
+
+        <div class="col-1">
+            <h4><i class="fa-solid fa-circle-check fa-xl"></i></h4>
+        </div>
+    </a>
+}
+<div class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        @{
+            for (int i = 1; i <= ViewBag.PageQuantity; i++)
+            {
+                <li class="page-item">
+                    <a class="page-link" onclick="getChapter(@i)">@i</a>
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+<script>
+    
+</script>
