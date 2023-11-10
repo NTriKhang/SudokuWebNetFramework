@@ -2,6 +2,7 @@
 using Stripe.BillingPortal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.EnterpriseServices.CompensatingResourceManager;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,9 @@ namespace Sudoku.Hubs
             await Groups.Add(Context.ConnectionId, roomId);
             int code = 200;
             await Clients.OthersInGroup(roomId).Notificate(code);
+            code = 201;
+            //Debug.WriteLine(Context.ConnectionId);
+            await Clients.Client(Context.ConnectionId).Notificate(code);
         }
         public async Task QuitRoom(string roomId, string roomOwnId = null)
         {
@@ -47,7 +51,7 @@ namespace Sudoku.Hubs
         }
         public async Task StartContest(string roomId, string riddle, int rows)
         {
-            var data = new { code = 200, riddle = riddle, rows = rows };
+            var data = new { code = 200, riddle = riddle, rows = rows, roomId = roomId };
             await Clients.Group(roomId).TakeRiddle(data);
         }
         public async Task EndContest(string roomId, string userName, string userImage)

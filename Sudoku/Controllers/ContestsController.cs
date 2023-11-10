@@ -39,9 +39,12 @@ namespace Sudoku.Controllers
         public string roomId { set; get; }
         public string roomOwnId { set; get; }
         public string userId { set; get; }
+        public string isJoin { set; get; } = "false";
+
     }
     public class SudokuSection
     {
+        public string roomId { set; get; }
         public string riddle { set; get; }
         public int rows { set; get; }
     }
@@ -61,6 +64,19 @@ namespace Sudoku.Controllers
             if (Request.Cookies["token"] == null)
                 return RedirectToAction("Login", "users");
 
+            //var userId = userService.GetUserId(Request);
+
+            //var userCurrentRoom = rooms.Where(x => x.UsersId.Contains(userId)).FirstOrDefault();
+            //if (userCurrentRoom != null)
+            //{
+            //    Session["UserCurrentRoom"] = userCurrentRoom.Id;
+            //}
+            if (Session["UserCurrentRoom"] != null)
+            {
+                var isRoomExist = rooms.Any(x => x.Id == Session["UserCurrentRoom"].ToString());
+                if (isRoomExist == false)
+                    Session["UserCurrentRoom"] = null;
+            }
             List<ContestDto> contestDtos = roomService.GetContests(rooms);
             return View(contestDtos);
         }
@@ -86,6 +102,10 @@ namespace Sudoku.Controllers
             roomDto.roomId = roomId;
             roomDto.roomOwnId = room.roomOwnId;
             roomDto.userId = userId;
+            if (Session["UserCurrentRoom"] != null && Session["UserCurrentRoom"].ToString() == roomId)
+            {
+                roomDto.isJoin = "true";
+            }
             return View(roomDto);
         }
         [HttpPost]
@@ -100,7 +120,7 @@ namespace Sudoku.Controllers
             {
                 if (userRoom.Id == roomId)
                 {
-                    //if user have already joined this room so just dedirect
+                    //if user have already joined this room so just return
                     return Json(new { code = 200 });
                 }
                 return Json(new { code = 409, msg = "You need to quit your room first" });
@@ -119,7 +139,7 @@ namespace Sudoku.Controllers
             else
             {
                 currentRoom.UsersId.Add(userId);
-                Session["Join"] = true;
+                Session["UserCurrentRoom"] = roomId;
                 return Json(new { code = 200 });
             }
         }
@@ -160,6 +180,7 @@ namespace Sudoku.Controllers
             var userId = userService.GetUserId(Request);
             var roomOwnId = roomService.GetRoomOwnId(rooms, roomId);
             var room = rooms.SingleOrDefault(x => x.Id == roomId);
+            Session["UserCurrentRoom"] = null;
             if (userId == roomOwnId && rooms.Where(x => x.Id == roomId).Single().BeginState == false)
             {
                 rooms.Remove(room);
@@ -201,6 +222,9 @@ namespace Sudoku.Controllers
         [HttpPost]
         public ActionResult SudokuSide(SudokuSection sudoku)
         {
+            var point = Session["Point"] as int?;
+            point -= rooms.Where(x => x.Id == sudoku.roomId).Select(x => x.Point).SingleOrDefault();
+            Session["Point"] = point;
             return View(new SudokuSection { riddle = sudoku.riddle, rows = sudoku.rows });
         }
         [HttpGet]
@@ -275,8 +299,9 @@ namespace Sudoku.Controllers
                 room.Id = Guid.NewGuid().ToString();
                 room.Riddle = "";
                 room.BeginState = false;
-
+              
                 rooms.Add(room);
+                Session["UserCurrentRoom"] = room.Id;
 
                 return RedirectToAction("Room", new { roomId = room.Id });
             }
@@ -309,6 +334,7 @@ namespace Sudoku.Controllers
                 var room = rooms.SingleOrDefault(x => x.Id == roomId);
 
                 user.Point += room.PointReward;
+                Session["Point"] = user.Point;
                 Contest contest = new Contest()
                 {
                     Name = room.Name,

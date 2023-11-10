@@ -246,7 +246,10 @@ namespace Sudoku.Services
                     maxPoint++;
 
                     if (sudokuArr[i, j] == '0')
+                    {
                         conflict++;
+                        continue;
+                    }
 
                     if (visited.Contains(sudokuArr[i, j] + "in row" + i))
                     {

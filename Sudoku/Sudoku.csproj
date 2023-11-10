@@ -228,6 +228,7 @@
     <Compile Include="Dtos\Incoming\UserEditDto.cs" />
     <Compile Include="Dtos\Incoming\UserLoginDto.cs" />
     <Compile Include="Dtos\Incoming\UserSignupDto.cs" />
+    <Compile Include="Dtos\Outgoing\ChapterDto.cs" />
     <Compile Include="Dtos\Outgoing\ChapterPlayDto.cs" />
     <Compile Include="Dtos\Outgoing\ChapterUpsertDto.cs" />
     <Compile Include="Dtos\Outgoing\ContestDto.cs" />
@@ -295,11 +296,9 @@
     <Content Include="Content\sweetalert\sweet-alert-animations.less" />
     <Content Include="Content\bootstrap\variables.less" />
     <Content Include="Content\bootstrap\mixins.less" />
+    <Content Include="wwwroot\notify_cat.jpg" />
     <Content Include="wwwroot\ProfileImage\490fdbavatars-001040350189-hn54or-t500x500.jpg" />
-    <Content Include="wwwroot\ProfileImage\77d75fd975d73d-1bf7-4f58-8433-7431c837402a-pom-pom-social-1.jpg" />
-    <Content Include="wwwroot\ProfileImage\d89420d975d73d-1bf7-4f58-8433-7431c837402a-pom-pom-social-1.jpg" />
     <Content Include="wwwroot\ProfileImage\ed82fbimages.jpg" />
-    <Content Include="wwwroot\ProfileImage\UserNoImage.jpg" />
     <Content Include="wwwroot\Riddle\01351f72-15bf-42f4-aaa5-575949217bd6.txt" />
     <Content Include="wwwroot\Riddle\0c3ee3f1-4987-4ea1-92e8-c95d0c22e4f1.txt" />
     <Content Include="wwwroot\Riddle\287c5423-80da-4b8a-8c66-eac1793a0a84.txt" />
@@ -314,6 +313,9 @@
     <Content Include="wwwroot\Riddle\ca171fbf-a129-4cd8-ab40-69e77d58a409.txt" />
     <Content Include="wwwroot\Riddle\db7a21d3-a780-4b4b-b563-f3702ee6db4e.txt" />
     <Content Include="wwwroot\Riddle\default-chapter.txt" />
+    <Content Include="wwwroot\SudokuImage\Easy.png" />
+    <Content Include="wwwroot\SudokuImage\Hard.png" />
+    <Content Include="wwwroot\SudokuImage\Medium.png" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -376,7 +378,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="wwwroot\SudokuImage\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

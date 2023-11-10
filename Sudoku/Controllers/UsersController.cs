@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
@@ -196,23 +197,6 @@ namespace Sudoku.Controllers
             return View(userDto);
         }
         [HttpGet]
-        public async Task<ActionResult> User()
-        {
-            if (Request.Cookies["token"] == null)
-            {
-                return Json( null );
-            }
-            var userId = userService.GetUserId(Request);
-            var user = await db.Users.FirstOrDefaultAsync(x => x.Id == userId);
-
-            UserDto userDto = new UserDto()
-            {
-                Point = user.Point,
-                Profile_Image = "\\" + Path.Combine("wwwroot", "ProfileImage", user.Profile_Image)
-            };
-            return Json(userDto, JsonRequestBehavior.AllowGet);
-        }
-        [HttpGet]
         public async Task<ActionResult> EditProfile()
         {
             var userId = userService.GetUserId(Request);
@@ -260,7 +244,7 @@ namespace Sudoku.Controllers
                 {
                     imgName = Guid.NewGuid().ToString().Substring(0, 6) + file.FileName;
                     string imagePath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "ProfileImage", imgName);
-                    string oldPath = Path.Combine(AppContext.BaseDirectory, "wwwroor", "ProfileImage", user.Profile_Image);
+                    string oldPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "ProfileImage", user.Profile_Image);
                     if (System.IO.File.Exists(oldPath))
                     {
                         System.IO.File.Delete(oldPath);
@@ -272,6 +256,7 @@ namespace Sudoku.Controllers
                 user.Last_name = userEdit.LastName;
                 user.Email = userEdit.Email;
                 user.Profile_Image = imgName;
+                Session["UserImage"] = "\\" + Path.Combine("wwwroot", "ProfileImage", imgName);
 
                 await db.SaveChangesAsync();
                 return Json(new { code = 200 });

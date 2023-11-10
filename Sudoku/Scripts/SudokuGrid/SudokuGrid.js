@@ -71,6 +71,7 @@ function drawGrid(className, list, rows, columns, editState) {
 }
 
 function btnEvent(e, i, j, color) {
+    console.log(color)
     e.target.style.color = color
     //adjust riddle reach first condition or not and modify it value
     if (e.target.textContent == '_') {
@@ -213,7 +214,7 @@ function addEventToBtn(btn, list, i, j, color, editState) {
 
         if (editState == true) {
             btn.addEventListener('click', function (e) {
-                btnEvent(e, i - 1, j - 1, 'color');
+                btnEvent(e, i - 1, j - 1, color);
             })
         }
 

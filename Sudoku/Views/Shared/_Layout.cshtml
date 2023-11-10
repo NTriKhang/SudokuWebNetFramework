@@ -50,7 +50,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Sudoku</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,13 +70,21 @@
                     <li id="personal" onclick="showPersonalList()" class="nav-item" style="position: relative; left: 80%">
                         <button class="btn text-white border-0" type="button">
                             <i class="fa-solid fa-coins fa-xl"></i>
-                            <span class="text-white" id="point"></span>
-
+                            @{
+                                if (Session["Point"] == null)
+                                {
+                                    <span class="text-white" id="point">0</span>
+                                }
+                                else
+                                {
+                                    <span class="text-white" id="point">@Session["Point"]</span>
+                                }
+                            }
                         </button>
 
-                        <button class="text-white btn dropdown-toggle" role="button" aria-expanded="false">
+                        <button class="text-white btn border-0 dropdown-toggle" role="button" aria-expanded="false">
                             @*<i class="fa-regular fa-circle-user fa-xl"></i>*@
-                            <img id="profileImage" style="width: 30px; height: 30px" alt="" loading="lazy"/>
+                            <img src="@Session["UserImage"]" id="profileImage" style="width: 30px; height: 30px" alt="" loading="lazy" />
                         </button>
 
                         @RenderPage("~/Views/Shared/Personal_section.cshtml")
@@ -107,15 +115,14 @@
 </html>
 
 <script>
-    $(document).ready(function () {
-        $.ajax({
-            url: '/users/user',
-            type: 'get',
-            success: function (response) {
-                console.log(response)
-                document.getElementById('point').textContent = response.Point
-                document.getElementById('profileImage').src = response.Profile_Image
-            }
-        })
-    })
+    //$(document).ready(function () {
+    //    $.ajax({
+    //        url: '/users/user',
+    //        type: 'get',
+    //        success: function (response) {
+    //            console.log(response)
+    //            document.getElementById('profileImage').src = response.Profile_Image
+    //        }
+    //    })
+    //})
 </script>

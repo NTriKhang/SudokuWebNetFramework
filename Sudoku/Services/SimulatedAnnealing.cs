@@ -18,7 +18,7 @@ namespace Sudoku.Services
         {
             var board = SimulatedAnnealingProcess(rows);
             Random random = new Random();
-            int quality = random.Next(rows + rows / 2, rows * 3);
+            int quality = random.Next(rows * (rows / 2), rows * 4);
             HashSet<string> indices = new HashSet<string>();
             while (quality > 0)
             {

@@ -44,8 +44,10 @@ namespace Sudoku.Controllers
 
             var chapterPerPage = 5;
             int skipChapter = (page - 1) * chapterPerPage;
+            
+            List<ChapterDto> chapters;
 
-            List<Chapter> chapters;
+            var userId = userService.GetUserId(Request);
 
             if (chapterName == "")
             {
@@ -54,6 +56,16 @@ namespace Sudoku.Controllers
                 chapters = await db.Chapters.OrderBy(x => x.CreateDate)
                                       .Skip(skipChapter).Take(chapterPerPage)
                                       .Include(x => x.TypeNavigation)
+                                      .Select(x => new ChapterDto
+                                      {
+                                          Id = x.Id,
+                                          Name = x.Name,
+                                          Chap_file_path = x.Chap_file_path,
+                                          CreateDate = x.CreateDate,
+                                          Type_id = x.Type_id,
+                                          TypeNavigation = x.TypeNavigation,
+                                          IsCompleted = db.Submissions.Any(s => s.ChapterId == x.Id && s.UserId == userId && s.State == utility.StateCompleted)
+                                      })
                                       .ToListAsync();
             }
             else
@@ -64,6 +76,16 @@ namespace Sudoku.Controllers
                                       .OrderBy(x => x.CreateDate)
                                       .Skip(skipChapter).Take(chapterPerPage)
                                       .Include(x => x.TypeNavigation)
+                                      .Select(x => new ChapterDto
+                                      {
+                                          Id = x.Id,
+                                          Name = x.Name,
+                                          Chap_file_path = x.Chap_file_path,
+                                          CreateDate = x.CreateDate,
+                                          Type_id = x.Type_id,
+                                          TypeNavigation = x.TypeNavigation,
+                                          IsCompleted = db.Submissions.Any(s => s.ChapterId == x.Id && s.UserId == userId && s.State == utility.StateCompleted)
+                                      })
                                       .ToListAsync();
             }
 
@@ -231,6 +253,7 @@ namespace Sudoku.Controllers
                                                 .SingleOrDefaultAsync();
 
                 user.Point += chapterPoint;
+                Session["Point"] = user.Point;
             }
 
             Submission submission = new Submission()

@@ -9,10 +9,11 @@
         text-decoration: none;
         color: black;
     }
-    .room:hover {
-        color: black;
-        background-color: whitesmoke;
-    }
+
+        .room:hover {
+            color: black;
+            background-color: whitesmoke;
+        }
 </style>
 @{
     if (ViewBag.Conflict != null)
@@ -22,6 +23,22 @@
         </div>
     }
 }
+
+@section Left_side{
+
+    @*<input id="chapterName" type="text" class="form-control mb-2" name="chapterName" placeholder="Name Chapter" />
+        <button class="btn btn-success" type="submit" onclick="getChapter(1)">Search</button>*@
+    @{
+        if (Session["UserCurrentRoom"] != null)
+        {
+            string link = "/Contests/Room?roomId=" + Session["UserCurrentRoom"];
+            <div id="currentRoomBox" class="shadow p-3 mb-2 bg-white rounded" style="">
+                <a id="currentRoom" href="@link" class="btn">Return to your room</a>
+            </div>
+        }
+    }
+}
+
 <div class="container">
 
     <div class="card">
@@ -69,3 +86,7 @@
     </div>
 
 </div>
+
+<script>
+
+</script>
