@@ -6,84 +6,70 @@
         background: white;
         border: 1px ridge;
         border-radius: 6px;
-        padding: 10px;
         margin-top: 20px;
+    }
+    .setting-bg-img{
+        background-size: cover;
+        background-repeat: no-repeat;
     }
 </style>
 <main>
+    <div id="carouselExampleIndicators" class="carousel slide bg-secondary p-3" data-bs-ride="carousel" style="border-radius:8px">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner ps-4">
+            <div class="carousel-item active ps-5">
+                <img src="~/wwwroot/SudokuImage/Easy.png" class="d-block w-25" alt="...">
+                <div class="carousel-caption d-none d-md-block" style="text-align:right">
+                    <p>Value from 1 to 5</p>
+                    <p>Five boxes separated by five colors</p>
+                    <p>Value must be unique on it row, colums, box</p>
+                </div>
+            </div>
+            <div class="carousel-item ps-5">
+                <img src="~/wwwroot/SudokuImage/Medium.png" class="d-block w-25" alt="...">
+                <div class="carousel-caption d-none d-md-block" style="text-align:right">
+                    <p>Value from 1 to 7</p>
+                    <p>Seven boxes separated by seven colors</p>
+                    <p>Value must be unique on it row, colums, box</p>
+                </div>
+            </div>
+            <div class="carousel-item ps-5">
+                <img src="~/wwwroot/SudokuImage/Hard.png" class="d-block w-25" alt="...">
+                <div class="carousel-caption d-none d-md-block" style="text-align:right">
+                    <p>Value from 1 to 9</p>
+                    <p>Nine boxes separated by border line of black and white</p>
+                    <p>Value must be unique on it row, colums, box</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
 
     <div class="">
-        <section aria-labelledby="gettingStartedTitle">
+        <section aria-labelledby="hostingTitle">
             <div class="card">
-                <div class="card-header"><h2 id="gettingStartedTitle">About rules</h2></div>
-                <div class="card-body">
-                    <div class="row p-3 mb-3">
-                        <div class="col-3">
-                            <img src="~/wwwroot/SudokuImage/Easy.png" style="width: -webkit-fill-available" />
-                        </div>
-                        <div class="col-6">
-                            <ul>
-                                <li>Value from 1 to 5</li>
-                                <li>Five boxes separated by five colors</li>
-                                <li>Value must be unique on it row, colums, box</li>
-                            </ul>
-                        </div>
-                        <div class="col-3">
-                            <img src="~/wwwroot/SudokuImage/EasyExample.png" style="width: -webkit-fill-available" />
-                        </div>
-                    </div>
-                    <div class="row p-3 mb-3">
-                        <div class="col-3">
-                            <img src="~/wwwroot/SudokuImage/Medium.png" style="width: -webkit-fill-available" />
-                        </div>
-                        <div class="col-6">
-                            <ul>
-                                <li>Value from 1 to 7</li>
-                                <li>Seven boxes separated by seven colors</li>
-                                <li>Value must be unique on it row, colums, box</li>
-                            </ul>
-                        </div>
-                        <div class="col-3">
-                            <img src="~/wwwroot/SudokuImage/MediumExample.png" style="width: -webkit-fill-available" />
-                        </div>
-                    </div>
-                    <div class="row p-3 mb-3">
-                        <div class="col-3">
-                            <img src="~/wwwroot/SudokuImage/Hard.png" style="width: -webkit-fill-available" />
-                        </div>
-                        <div class="col-6">
-                            <ul>
-                                <li>Value from 1 to 9</li>
-                                <li>Nine boxes separated by border line of black and white</li>
-                                <li>Value must be unique on it row, colums, box</li>
-                            </ul>
-                        </div>
-                        <div class="col-3">
-                            <img src="~/wwwroot/SudokuImage/HardExample.png" style="width: -webkit-fill-available" />
-                        </div>
-                    </div>
+                <div class="card-header"><h2 id="gettingStartedTitle">Interesting in become a generator ?</h2></div>
+                <div class="card-body setting-bg-img" style="background-image:url('/wwwroot/SudokuImage/sudoku_generator-featured.png'); height:450px">
+                    <a class="btn btn-dark" href="/RoleManage/">Learn more &raquo;</a>
                 </div>
             </div>
         </section>
         <section aria-labelledby="librariesTitle">
             <div class="card">
                 <div class="card-header"><h2 id="gettingStartedTitle">Contest</h2></div>
-                <div class="card-body">
-                    <ul>
-                        <li>Create or join room to compete with others player</li>
-                    </ul>
-                    <a class="btn btn-outline-dark" href="/Contests/">Go to contest &raquo;</a>
-                </div>
-            </div>
-        </section>
-        <section aria-labelledby="hostingTitle">
-            <div class="card">
-                <div class="card-header"><h2 id="gettingStartedTitle">Interesting to become an author ?</h2></div>
-                <div class="card-body">
-                    <ul>
-                        <li>With a small fee, you'll have permission to create riddle</li>
-                    </ul>
-                    <a class="btn btn-outline-dark" href="/RoleManage/">Learn more &raquo;</a>
+                <div class="card-body setting-bg-img" style="background-image:url('/wwwroot/SudokuImage/featured-sudoku-competition.jpg'); height:450px">
+                    <a class="btn btn-dark" href="/Contests/">Go to contest &raquo;</a>
                 </div>
             </div>
         </section>

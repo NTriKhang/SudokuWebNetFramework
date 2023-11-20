@@ -314,8 +314,10 @@
     <Content Include="wwwroot\Riddle\db7a21d3-a780-4b4b-b563-f3702ee6db4e.txt" />
     <Content Include="wwwroot\Riddle\default-chapter.txt" />
     <Content Include="wwwroot\SudokuImage\Easy.png" />
+    <Content Include="wwwroot\SudokuImage\featured-sudoku-competition.jpg" />
     <Content Include="wwwroot\SudokuImage\Hard.png" />
     <Content Include="wwwroot\SudokuImage\Medium.png" />
+    <Content Include="wwwroot\SudokuImage\sudoku_generator-featured.png" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
