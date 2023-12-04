@@ -32,6 +32,8 @@ namespace Sudoku.Services
         }
         public string GetUserRole(HttpRequestBase Request)
         {
+            if (Request.Cookies["token"] == null)
+                return "";
             var token = Request.Cookies["token"].Value;
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             var securityToken = handler.ReadJwtToken(token);

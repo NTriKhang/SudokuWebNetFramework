@@ -302,28 +302,43 @@ namespace Sudoku.Controllers
         // GET: Chapters/Delete/5
         public ActionResult Delete(string id)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                Chapter chapter = db.Chapters.Find(id);
+                if (chapter == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(chapter);
             }
-            Chapter chapter = db.Chapters.Find(id);
-            if (chapter == null)
+            catch (Exception)
             {
-                return HttpNotFound();
+                ViewBag["Conflict"] = "Conflict foreign key";
+                throw;
             }
-            return View(chapter);
         }
 
         // POST: Chapters/Delete/5
         [HttpPost, ActionName("Delete")]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            Chapter chapter = await db.Chapters.FindAsync(id);
-            sudokuService.DeletedSudokuFile(chapter.Chap_file_path);
+            try
+            {
+                Chapter chapter = await db.Chapters.FindAsync(id);
+                sudokuService.DeletedSudokuFile(chapter.Chap_file_path);
 
-            db.Chapters.Remove(chapter);
-            await db.SaveChangesAsync();
-            return Json(new { code=200 });
+                db.Chapters.Remove(chapter);
+                await db.SaveChangesAsync();
+                return Json(new { code = 200 });
+            }
+            catch (Exception)
+            {
+                return Json(new { code = 409 });
+            }
         }
 
         protected override void Dispose(bool disposing)
