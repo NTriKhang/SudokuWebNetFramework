@@ -26,7 +26,7 @@ namespace Sudoku.App_Start
             app.UseHangfireDashboard();
             app.MapSignalR();
 
-            RecurringJob.AddOrUpdate<HangFireService>("setRankUser", x => x.RankPlayer(), "0 */10 * ? * *");
+            RecurringJob.AddOrUpdate<HangFireService>("setRankUser", x => x.RankPlayer(), "0 */5 * ? * *");
             RecurringJob.AddOrUpdate<HangFireService>("reStoreAuthorPost", x => x.RestoreAuthorPostQuantity(), "0 */5 * ? * *");
         }
     }

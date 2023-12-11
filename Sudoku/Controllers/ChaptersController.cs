@@ -329,10 +329,14 @@ namespace Sudoku.Controllers
             try
             {
                 Chapter chapter = await db.Chapters.FindAsync(id);
-                sudokuService.DeletedSudokuFile(chapter.Chap_file_path);
 
                 db.Chapters.Remove(chapter);
+                string fileDeletePath = chapter.Chap_file_path;
                 await db.SaveChangesAsync();
+
+                sudokuService.DeletedSudokuFile(fileDeletePath);
+
+
                 return Json(new { code = 200 });
             }
             catch (Exception)

@@ -16,6 +16,6 @@ namespace Sudoku
         public static string LevelHard { get; } = "Hard";
         public static string LevelMedium { get; } = "Medium";
         public static string LevelEasy { get; } = "Easy";
-        public static double RankTime { get; } = 10;
+        public static double RankTime { get; } = 5;
     }
 }

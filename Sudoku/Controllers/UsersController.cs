@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
@@ -9,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -33,13 +35,31 @@ namespace Sudoku.Controllers
         {
             return View();
         }
+        [NonAction]
+        private bool IsValid(string email)
+        {
+            var valid = true;
+
+            try
+            {
+                var emailAddress = new MailAddress(email);
+            }
+            catch
+            {
+                valid = false;
+            }
+
+            return valid;
+        }
         [HttpPost]
         public async Task<ActionResult> SignUp(UserSignupDto userSignup, HttpPostedFileBase file)
         {
-            if (!ModelState.IsValid)
-                return View(userSignup);
             try
             {
+                if (!IsValid(userSignup.Email))
+                {
+                    return Json(new { code = 400, msg = "email is not valid" });
+                }
                 bool isEmailExits = await db.Users.AnyAsync(x => x.Email == userSignup.Email);
                 if (isEmailExits)
                 {
@@ -75,9 +95,9 @@ namespace Sudoku.Controllers
                 int num = await db.SaveChangesAsync();
                 if (num == 0)
                 {
-                    throw new Exception("Nothing was saved to database");
+                    return Json(new { code = 500, msg = "Internal error" });
                 }
-                return RedirectToAction("Index", "Home");
+                return Json(new { code = 200 });
             }
             catch (Exception ex)
             {
@@ -245,7 +265,7 @@ namespace Sudoku.Controllers
                     imgName = Guid.NewGuid().ToString().Substring(0, 6) + file.FileName;
                     string imagePath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "ProfileImage", imgName);
                     string oldPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "ProfileImage", user.Profile_Image);
-                    if (System.IO.File.Exists(oldPath))
+                    if (System.IO.File.Exists(oldPath) && user.Profile_Image != "UserNoImage.jpg")
                     {
                         System.IO.File.Delete(oldPath);
                     }

@@ -6,6 +6,8 @@ using Sudoku.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -97,8 +99,9 @@ namespace Sudoku.Controllers
                                          Date = x.Date,
                                          UserName = x.User.First_name + " " + x.User.Last_name,
                                          UserId = x.User.Id,
-                                         DiscussId = x.Id
-                                     }).ToListAsync();
+                                         DiscussId = x.Id,
+                                         UserImage_Path = "\\wwwroot\\ProfileImage\\" + x.User.Profile_Image
+            }).ToListAsync();
                 return View(response);
             }
             return View(response);

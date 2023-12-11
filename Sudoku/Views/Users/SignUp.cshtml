@@ -46,11 +46,8 @@
         <i class="fa-solid fa-xmark fa-2xl" style="color: #ffffff;"></i>
     </a>
 </div>
-@using (Html.BeginForm("SignUp", "Users", FormMethod.Post, new { enctype = "multipart/form-data", @class = "row" }))
-{
+<div class="row">
     <div class="col-6">
-
-        @Html.AntiForgeryToken()
 
         <div class="form-horizontal">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -72,21 +69,23 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    @*@Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })*@
+                    <input type="email" id="EmailSignUp" class="form-control"/>
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    @*@Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })*@
+                    <input type="password" id="PasswordSignup" class="form-control"/>
                 </div>
             </div>
 
             <div class="form-group mt-3">
                 <div class="col-md-offset-2 col-md-10">
-                    <button type="submit" class="btn btn-outline-secondary">Create new account</button>>
+                    <button type="button" onclick="Post()" class="btn btn-outline-secondary">Create new account</button>
                 </div>
             </div>
         </div>
@@ -94,7 +93,7 @@
     </div>
     <div class="col-6">
         <div class="p-4">
-            <span id="image_span"  class="Image_span">
+            <span id="image_span" class="Image_span">
                 <button type="button" id="btn_img" onclick="profile_picture.click()">
                     <i class="fa-solid fa-image" id="img_icon"></i>
                 </button>
@@ -104,8 +103,7 @@
     </div>
     <input onchange="previewImage()" id="profile_picture" type="file" class="form-control" name="file" style="display:none" accept=".jpg, .png" />
 
-}
-
+</div>
 <script>
     function previewImage() {
         var fileInput = document.getElementById('profile_picture');
@@ -118,6 +116,51 @@
             imageSpan.style.backgroundRepeat = 'no-repeat';
         }
         reader.readAsDataURL(file);
+    }
+    function Post() {
+        var firstName = document.getElementById('First_name').value
+        var lastName = document.getElementById('Last_name').value
+        var email = document.getElementById('EmailSignUp').value
+        var password = document.getElementById('PasswordSignup').value
+        if (firstName == "" || lastName == "" || email == "" || password == "") {
+            console.log(firstName)
+            console.log(lastName)
+            console.log(email)
+            console.log(password)
+            alert("lack of information")
+        }
+        else {
+            var fileInput = $('#profile_picture').get(0);
+            var file = fileInput.files[0];
+            console.log(file)
+
+            var formdata = new FormData(); //FormData object
+
+            formdata.append('file', file);
+            formdata.append('First_Name', $('#First_name').val());
+            formdata.append('Last_Name', $('#Last_name').val());
+            formdata.append('Email', $('#EmailSignUp').val());
+            formdata.append('Password', $('#PasswordSignup').val());
+
+
+
+            $.ajax({
+                url: '/users/SignUp',
+                type: 'post',
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                data: formdata,
+                success: function (response) {
+                    console.log(response.code)
+                    if (response.code == 200) {
+                        closeModal();
+                    }
+                    else {
+                        alert(response.msg)
+                    }
+                }
+            })
+        }
     }
 </script>
 

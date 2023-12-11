@@ -297,7 +297,6 @@
     <Content Include="Content\bootstrap\variables.less" />
     <Content Include="Content\bootstrap\mixins.less" />
     <Content Include="wwwroot\notify_cat.jpg" />
-    <Content Include="wwwroot\ProfileImage\490fdbavatars-001040350189-hn54or-t500x500.jpg" />
     <Content Include="wwwroot\ProfileImage\ed82fbimages.jpg" />
     <Content Include="wwwroot\Riddle\01351f72-15bf-42f4-aaa5-575949217bd6.txt" />
     <Content Include="wwwroot\Riddle\0c3ee3f1-4987-4ea1-92e8-c95d0c22e4f1.txt" />
