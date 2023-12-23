@@ -11,5 +11,5 @@ Include :
 
 Set up db:
   - In sqlserver create a db name SudokuServer and run migration cmd for init db.
-  - Create a hangfire db dynamically.
+  - Create a hangfire db manually.
   - Remember to change connectionString before run migration cmd 😊 
