@@ -1,5 +1,5 @@
-this is a website for you to play sudoku online
-it has three level and an algorithm help you to create the riddle by your own.
+this is a website for you to play sudoku online,
+it has three level and an algorithm help you to create riddle by your own.
 
 Include :
   - .Net 4.8, EF6, Ajax
